@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Liste biere -->
     <h1>Liste des bières</h1>
     <table>
       <thead>
@@ -27,6 +28,7 @@
         </tr>
       </tbody>
     </table>
+    <!-- Ajouter biere -->
     <div>
       <h2>Ajouter une bière</h2>
       <div>
@@ -59,8 +61,16 @@
         <input type="text" id="proprietaire" v-model="beer.proprietaire" required />
       </div>
       <button @click="addBeer">Ajouter</button>
-  </div>
     </div>
+    <!-- Supprimer biere -->
+     <div>
+      <h2>Supprimer une bière</h2>
+      <div v-for="(beer, index) in listbeer" :key="beer.id">
+        <span>{{ beer.name }}</span>
+        <button @click="deleteBeer(index)">Supprimer</button>
+      </div>
+     </div>
+  </div>
 </template>
 
 <script>
@@ -69,7 +79,7 @@ export default {
   data() {
     return {
       beer: {
-        id: null,
+        id: 0,
         name: null,
         commentaire: null,
         prixHT: null,
@@ -84,7 +94,11 @@ export default {
   methods: {
     addBeer() {
       this.beer.prixTTC = (this.beer.prixHT * 1.2).toFixed(2);
-      this.beer.id = this.listbeer.length + 1;
+      this.listbeer.forEach((beer) => {
+        if (beer.id >= this.beer.id) {
+          this.beer.id = beer.id + 1;
+        }
+      });
       this.listbeer.push({ 
         id: this.beer.id,
         name: this.beer.name,
@@ -106,6 +120,9 @@ export default {
         };
         console.log(this.listbeer);
         console.log("test");
+    },
+    deleteBeer(index) {
+      this.listbeer.splice(index, 1);
     },
   }
 }
