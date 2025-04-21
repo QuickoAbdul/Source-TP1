@@ -3,7 +3,7 @@
     <!-- Liste biere -->
     <h1>Liste des bières</h1>
     <table>
-      <thead>
+      <thead class="thead-dark">
         <tr>
           <th>ID</th>
           <th>Nom</th>
@@ -29,47 +29,50 @@
       </tbody>
     </table>
     <!-- Ajouter biere -->
-    <div>
-      <h2>Ajouter une bière</h2>
-      <div>
-        <label for="name">Nom:</label>
-        <input type="text" id="name" v-model="beer.name" required />
+    <div class="mid-container">
+      <div class="container space-between">
+        <h2>Ajouter une bière</h2>
+        <div>
+          <label for="name">Nom:</label>
+          <input type="text" id="name" v-model="beer.name" required />
+        </div>
+        <div>
+          <label for="commentaire">Commentaire:</label>
+          <textarea id="commentaire" v-model="beer.commentaire"></textarea>
+        </div>
+        <div>
+          <label for="prixHT">Prix HT:</label>
+          <input type="number" id="prixHT" v-model="beer.prixHT" step="0.01" required />
+        </div>
+        <div>
+          <label for="degree">Degré d'alcool:</label>
+          <input type="number" id="degree" v-model="beer.degree" step="0.1" min="0" max="70" required />
+        </div>
+        <div>
+          <label for="type">Type:</label>
+          <select id="type" v-model="beer.type" required>
+            <option value="DARK">DARK</option>
+            <option value="BLONDE">BLONDE</option>
+            <option value="IPA">IPA</option>
+            <option value="BROWN">BROWN</option>
+          </select>
+        </div>
+        <div>
+          <label for="proprietaire">Propriétaire:</label>
+          <input type="text" id="proprietaire" v-model="beer.proprietaire" required />
+        </div>
+        <button @click="submitForm()">Ajouter</button>
       </div>
-      <div>
-        <label for="commentaire">Commentaire:</label>
-        <textarea id="commentaire" v-model="beer.commentaire"></textarea>
+      <!-- Supprimer biere -->
+      <div class="container">
+        <h2>Supprimer une bière</h2>
+        <div v-for="(beer, index) in listbeer" :key="beer.id">
+          <span>{{ beer.name }}</span>
+          <button @click="deleteBeer(index)">Supprimer</button>
+        </div>
       </div>
-      <div>
-        <label for="prixHT">Prix HT:</label>
-        <input type="number" id="prixHT" v-model="beer.prixHT" step="0.01" required />
-      </div>
-      <div>
-        <label for="degree">Degré d'alcool:</label>
-        <input type="number" id="degree" v-model="beer.degree" step="0.1" min="0" max="70" required />
-      </div>
-      <div>
-        <label for="type">Type:</label>
-        <select id="type" v-model="beer.type" required>
-          <option value="DARK">DARK</option>
-          <option value="BLONDE">BLONDE</option>
-          <option value="IPA">IPA</option>
-          <option value="BROWN">BROWN</option>
-        </select>
-      </div>
-      <div>
-        <label for="proprietaire">Propriétaire:</label>
-        <input type="text" id="proprietaire" v-model="beer.proprietaire" required />
-      </div>
-      <button @click="addBeer">Ajouter</button>
     </div>
-    <!-- Supprimer biere -->
-     <div>
-      <h2>Supprimer une bière</h2>
-      <div v-for="(beer, index) in listbeer" :key="beer.id">
-        <span>{{ beer.name }}</span>
-        <button @click="deleteBeer(index)">Supprimer</button>
-      </div>
-     </div>
+      
   </div>
 </template>
 
@@ -92,6 +95,16 @@ export default {
     }
   },
   methods: {
+    submitForm() {
+      if (this.beer.degree < 0 || this.beer.degree > 70) {
+      alert("Le degré d'alcool doit être entre 0 et 70");
+      return;
+      }
+      else{ 
+        addBeer();
+      }
+    },
+
     addBeer() {
       this.beer.prixTTC = (this.beer.prixHT * 1.2).toFixed(2);
       this.listbeer.forEach((beer) => {
@@ -128,3 +141,30 @@ export default {
 }
 
 </script>
+
+<style scoped lang="scss">
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #aaaaaa;
+}
+
+.mid-container {
+  display: flex;
+  justify-content: center;
+  justify-content: space-around;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 100vh;
+  
+}
+
+</style>
