@@ -2,13 +2,14 @@
   <div>
     <!-- Liste biere -->
     <h1>Liste des bières</h1>
+    <p>(Plus Bonus 2)</p>
     <table>
       <thead class="thead-dark">
         <tr>
           <th>ID</th>
           <th>Nom</th>
           <th>Commentaire</th>
-          <th>Prix HT</th>
+          <th>Prix HT (€)</th>
           <th>Prix TTC (€)</th>
           <th>Degré d'alcool</th>
           <th>Type</th>
@@ -42,7 +43,7 @@
           <textarea id="commentaire" v-model="beer.commentaire"></textarea>
         </div>
         <div>
-          <label for="prixHT">Prix HT:</label>
+          <label for="prixHT">Prix HT (€):</label>
           <input type="number" id="prixHT" v-model="beer.prixHT" step="0.01" required :class="{ error: errors.prixHT }" />
           <span v-if="beer.prixHT" class="prix-ttc">TTC : {{ prixTTC }} € </span>
           <span v-if="errors.prixHT" class="error-message">{{ errors.prixHT }}</span>
@@ -70,6 +71,7 @@
         </div>
         <button @click="submitForm()">Ajouter</button>
       </div>
+      <div class="vertical-bar"></div>
       <!-- Supprimer biere -->
       <div class="container">
         <h2>Supprimer une bière</h2>
@@ -120,7 +122,9 @@ export default {
     if (!this.beer.prixHT) {
       this.errors.prixHT = "Prix incorrect";
     }
-    if (this.beer.degree === "" || this.beer.degree < 0 || this.beer.degree > 70) {
+    if (!this.beer.degree) {
+      this.errors.degree = "Degree requis";
+    }else if (this.beer.degree === "" || this.beer.degree < 0 || this.beer.degree > 70) {
       this.errors.degree = "Degré d'alcool entre 0 et 70";
     }
     if (!this.beer.type) {
@@ -212,6 +216,12 @@ th {
   flex-wrap: wrap;
   height: 100vh;
   
+}
+
+.vertical-bar {
+  width: 1px; 
+  background-color: #ddd; 
+  height: 100%;
 }
 
 </style>
