@@ -9,7 +9,7 @@
           <th>Nom</th>
           <th>Commentaire</th>
           <th>Prix HT</th>
-          <th>Prix TTC</th>
+          <th>Prix TTC (€)</th>
           <th>Degré d'alcool</th>
           <th>Type</th>
           <th>Propriétaire</th>
@@ -18,7 +18,7 @@
       <tbody>
         <tr v-for="beer in listbeer" :key="beer.id">
           <td>{{ beer.id }}</td>
-          <td>{{ beer.name }}</td>
+          <td>{{ toPascalCase(beer.name) }}</td>
           <td>{{ beer.commentaire }}</td>
           <td>{{ beer.prixHT }}</td>
           <td>{{ beer.prixTTC }}</td>
@@ -103,6 +103,10 @@ export default {
     }
   },
   methods: {
+    toPascalCase(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join('');
+    },
+
     validateForm() {
     this.errors = {};
 
@@ -129,6 +133,7 @@ export default {
     }
       return Object.keys(this.errors).length === 0;
     },
+
     submitForm() {
       if (!this.validateForm()) {
         return;
