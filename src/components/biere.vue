@@ -31,7 +31,7 @@
     </table>
     <!-- Ajouter biere -->
     <div class="mid-container">
-      <div class="container space-between">
+      <div class="container space-between left-container">
         <h2>Ajouter une bière</h2>
         <div>
           <label for="name">Nom:</label>
@@ -203,6 +203,12 @@ th {
   background-color: #aaaaaa;
 }
 
+.left-container {
+  display: flex;
+  align-content: flex-start;
+  flex-direction: column;
+}
+
 .error-message {
   color: red;
   font-size: 0.9em;
@@ -210,7 +216,6 @@ th {
 
 .mid-container {
   display: flex;
-  justify-content: center;
   justify-content: space-around;
   flex-direction: row;
   flex-wrap: wrap;
