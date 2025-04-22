@@ -20,9 +20,9 @@
         <tr v-for="beer in listbeer" :key="beer.id">
           <td>{{ beer.id }}</td>
           <td>{{ toPascalCase(beer.name) }}</td>
-          <td>{{ beer.commentaire }}</td>
-          <td>{{ beer.prixHT }}</td>
-          <td>{{ beer.prixTTC }}</td>
+          <td>{{ beer.comment }}</td>
+          <td>{{ beer.priceHT }}</td>
+          <td>{{ beer.priceTTC }}</td>
           <td>{{ beer.degree }}</td>
           <td>{{ beer.type }}</td>
           <td>{{ beer.proprietaire }}</td>
@@ -39,14 +39,14 @@
           <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
         </div>
         <div>
-          <label for="commentaire">Commentaire:</label>
-          <textarea id="commentaire" v-model="beer.commentaire"></textarea>
+          <label for="comment">Commentaire:</label>
+          <textarea id="comment" v-model="beer.comment"></textarea>
         </div>
         <div>
-          <label for="prixHT">Prix HT (€):</label>
-          <input type="number" id="prixHT" v-model="beer.prixHT" step="0.01" required :class="{ error: errors.prixHT }" />
-          <span v-if="beer.prixHT" class="prix-ttc">TTC : {{ prixTTC }} € </span>
-          <span v-if="errors.prixHT" class="error-message">{{ errors.prixHT }}</span>
+          <label for="priceHT">Prix HT (€):</label>
+          <input type="number" id="priceHT" v-model="beer.priceHT" step="0.01" required :class="{ error: errors.priceHT }" />
+          <span v-if="beer.priceHT" class="prix-ttc">TTC : {{ priceTTC }} € </span>
+          <span v-if="errors.priceHT" class="error-message">{{ errors.priceHT }}</span>
         </div>
         <div>
           <label for="degree">Degré d'alcool:</label>
@@ -93,9 +93,9 @@ export default {
       beer: {
         id: 0,
         name: null,
-        commentaire: null,
-        prixHT: null,
-        prixTTC: null,
+        comment: null,
+        priceHT: null,
+        priceTTC: null,
         degree: null,
         type: null,
         proprietaire: null
@@ -119,8 +119,8 @@ export default {
     } else if (!caractereRegex.test(this.beer.name)) {
       this.errors.name = "Le propriétaire ne doit contenir que des lettres et des espaces";
     }
-    if (!this.beer.prixHT) {
-      this.errors.prixHT = "Prix incorrect";
+    if (!this.beer.priceHT) {
+      this.errors.priceHT = "Prix incorrect";
     }
     if (!this.beer.degree) {
       this.errors.degree = "Degree requis";
@@ -146,7 +146,7 @@ export default {
     },
 
     addBeer() {
-      this.beer.prixTTC = (this.beer.prixHT * 1.2).toFixed(2);
+      this.beer.priceTTC = (this.beer.priceHT * 1.2).toFixed(2);
       this.listbeer.forEach((beer) => {
         if (beer.id >= this.beer.id) {
           this.beer.id = beer.id + 1;
@@ -155,18 +155,18 @@ export default {
       this.listbeer.push({ 
         id: this.beer.id,
         name: this.beer.name,
-        commentaire: this.beer.commentaire,
-        prixHT: this.beer.prixHT,
-        prixTTC: this.beer.prixTTC,
+        comment: this.beer.comment,
+        priceHT: this.beer.priceHT,
+        priceTTC: this.beer.priceTTC,
         degree: this.beer.degree,
         type: this.beer.type,
         proprietaire: this.beer.proprietaire});
         this.beer = {
           id: "",
           name: "",
-          commentaire: "",
-          prixHT: "",
-          prixTTC: "",
+          comment: "",
+          priceHT: "",
+          priceTTC: "",
           degree: "",
           type: "",
           proprietaire: ""
@@ -179,8 +179,8 @@ export default {
     },
   },
   computed: {
-    prixTTC() {
-      return (this.beer.prixHT * 1.2).toFixed(2);
+    priceTTC() {
+      return (this.beer.priceHT * 1.2).toFixed(2);
     }
   },
 
