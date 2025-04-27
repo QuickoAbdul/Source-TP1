@@ -26,6 +26,10 @@ const routes = [
     path: '/listing',
     name: 'listing',
     component: Listing
+  },
+  {
+    path: '/:pathMatch(.*)*', //peut importe la route -> redirige vers la liste
+    redirect: '/listing'
   }
 ]
 
