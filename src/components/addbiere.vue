@@ -144,3 +144,10 @@ const submitForm = () => {
 };
 
 </script>
+
+<style>
+.error-message {
+  color: red;
+  font-size: 0.9em;
+}
+</style>
