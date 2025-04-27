@@ -85,108 +85,117 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref, computed, onMounted } from 'vue';
+import { useStore } from '../store/store';
 
-export default {
-  data() {
-    return {
-      beer: {
-        id: 0,
-        name: null,
-        comment: null,
-        priceHT: null,
-        priceTTC: null,
-        degree: null,
-        type: null,
-        proprietaire: null
-      },
-      listbeer: [],
-      errors: {},
-    }
-  },
-  methods: {
-    toPascalCase(str) {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join('');
-    },
+// Store
+const store = useStore();
 
-    validateForm() {
-    this.errors = {};
+// Data
+const beer = reactive({
+  id: 0,
+  name: null,
+  comment: null,
+  priceHT: null,
+  priceTTC: null,
+  degree: null,
+  type: null,
+  proprietaire: null,
+});
 
-    const caractereRegex = /^[A-Za-zÀ-ÿ\s]+$/; //Regex que caractere
+const errors = reactive({});
 
-    if (!this.beer.name) {
-      this.errors.name = "Nom requis";
-    } else if (!caractereRegex.test(this.beer.name)) {
-      this.errors.name = "Le propriétaire ne doit contenir que des lettres et des espaces";
-    }
-    if (!this.beer.priceHT) {
-      this.errors.priceHT = "Prix incorrect";
-    }
-    if (!this.beer.degree) {
-      this.errors.degree = "Degree requis";
-    }else if (this.beer.degree === "" || this.beer.degree < 0 || this.beer.degree > 70) {
-      this.errors.degree = "Degré d'alcool entre 0 et 70";
-    }
-    if (!this.beer.type) {
-      this.errors.type = "Type requis";
-    }
-    if (!this.beer.proprietaire) {
-      this.errors.proprietaire = "Propriétaire requis";
-    } else if (!caractereRegex.test(this.beer.proprietaire)) {
-      this.errors.proprietaire = "Le propriétaire ne doit contenir que des lettres et des espaces";
-    }
-      return Object.keys(this.errors).length === 0;
-    },
+// Computed
+const priceTTC = computed(() => {
+  return (beer.priceHT * 1.2).toFixed(2);
+});
 
-    submitForm() {
-      if (!this.validateForm()) {
-        return;
-      }
-      this.addBeer();
-    },
+const listbeer = computed(() => store.listbeers); // Quand store.beers change, listbeer met automatiquement à jour
 
-    addBeer() {
-      this.beer.priceTTC = (this.beer.priceHT * 1.2).toFixed(2);
-      this.listbeer.forEach((beer) => {
-        if (beer.id >= this.beer.id) {
-          this.beer.id = beer.id + 1;
-        }
-      });
-      this.listbeer.push({ 
-        id: this.beer.id,
-        name: this.beer.name,
-        comment: this.beer.comment,
-        priceHT: this.beer.priceHT,
-        priceTTC: this.beer.priceTTC,
-        degree: this.beer.degree,
-        type: this.beer.type,
-        proprietaire: this.beer.proprietaire});
-        this.beer = {
-          id: "",
-          name: "",
-          comment: "",
-          priceHT: "",
-          priceTTC: "",
-          degree: "",
-          type: "",
-          proprietaire: ""
-        };
-        console.log(this.listbeer);
-        console.log("test");
-    },
-    deleteBeer(index) {
-      this.listbeer.splice(index, 1);
-    },
-  },
-  computed: {
-    priceTTC() {
-      return (this.beer.priceHT * 1.2).toFixed(2);
-    }
-  },
+// Methods
+const toPascalCase = (str) => {
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+};
 
-}
+const validateForm = () => {
+  Object.keys(errors).forEach(key => delete errors[key]);
 
+  const caractereRegex = /^[A-Za-zÀ-ÿ\s]+$/; // Regex que caractère
+
+  if (!beer.name) {
+    errors.name = "Nom requis";
+  } else if (!caractereRegex.test(beer.name)) {
+    errors.name = "Le nom ne doit contenir que des lettres et des espaces";
+  }
+
+  if (!beer.priceHT) {
+    errors.priceHT = "Prix incorrect";
+  }
+
+  if (!beer.degree) {
+    errors.degree = "Degré requis";
+  } else if (beer.degree === "" || beer.degree < 0 || beer.degree > 70) {
+    errors.degree = "Degré d'alcool entre 0 et 70";
+  }
+
+  if (!beer.type) {
+    errors.type = "Type requis";
+  }
+
+  if (!beer.proprietaire) {
+    errors.proprietaire = "Propriétaire requis";
+  } else if (!caractereRegex.test(beer.proprietaire)) {
+    errors.proprietaire = "Le propriétaire ne doit contenir que des lettres et des espaces";
+  }
+
+  return Object.keys(errors).length === 0;
+};
+
+const addBeer = () => {
+  beer.priceTTC = (beer.priceHT * 1.2).toFixed(2);
+
+  store.listbeers.push({
+    id: store.listbeers.length + 1,
+    name: beer.name,
+    comment: beer.comment,
+    priceHT: beer.priceHT,
+    priceTTC: beer.priceTTC,
+    degree: beer.degree,
+    type: beer.type,
+    proprietaire: beer.proprietaire,
+  });
+
+  // Reset beer
+  Object.assign(beer, {
+    id: "",
+    name: "",
+    comment: "",
+    priceHT: "",
+    priceTTC: "",
+    degree: "",
+    type: "",
+    proprietaire: "",
+  });
+};
+
+const submitForm = () => {
+  if (!validateForm()) {
+    return;
+  }
+  addBeer();
+  console.log("Bière ajoutée:", store.listbeers);
+};
+
+const deleteBeer = (index) => {
+  store.listbeers.splice(index, 1);
+  console.log("Bière supprimée:", store.listbeers);
+};
 </script>
+
 
 <style scoped lang="scss">
 
