@@ -44,11 +44,22 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useStore } from '../store/store';
+import BeerAPI from '../api/BeerAPI.js';
 
 // Store
 const store = useStore();
 
 const listbeer = computed(() => store.listbeers); // Quand store.beers change, listbeer met automatiquement à jour
+
+onMounted(() => {
+  const beerAPI = new BeerAPI();
+
+  beerAPI.getAllBeers().then((beers) => {
+    store.listbeers = beers;
+  }).catch((error) => {
+    console.error("Erreur lors de la récupération des bières:", error);
+  });
+});
 
 // Methods
 const toPascalCase = (str) => {
@@ -60,6 +71,13 @@ const toPascalCase = (str) => {
 
 
 const deleteBeer = (index) => {
+  const beerAPI = new BeerAPI();
+  const beer = store.listbeers[index];
+  beerAPI.deleteBeer(beer.id).then(() => {
+    console.log("Bière supprimée avec succès:", beer.id);
+  }).catch((error) => {
+    console.error("Erreur lors de la suppression de la bière:", error);
+  });
   store.listbeers.splice(index, 1);
   console.log("Bière supprimée:", store.listbeers);
 };

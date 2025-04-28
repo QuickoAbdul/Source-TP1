@@ -48,10 +48,14 @@
 <script setup>
 import { reactive, computed } from 'vue';
 import { useStore } from '../store/store';
-import router from '@/router';
+import BeerAPI from '../api/BeerAPI.js';
+
 
 //Store
 const store = useStore();
+
+// API
+const beerAPI = new BeerAPI();
 
 // Data
 const beer = reactive({
@@ -72,7 +76,6 @@ const priceTTC = computed(() => {
   return (beer.priceHT * 1.2).toFixed(2);
 });
 
-const listbeer = computed(() => store.listbeers); // Quand store.beers change, listbeer met automatiquement à jour
 
 
 const validateForm = () => {
@@ -109,31 +112,50 @@ const validateForm = () => {
   return Object.keys(errors).length === 0;
 };
 
-const addBeer = () => {
+const addBeer = async () => {
   beer.priceTTC = (beer.priceHT * 1.2).toFixed(2);
 
-  store.listbeers.push({
-    id: store.listbeers.length + 1,
-    name: beer.name,
-    comment: beer.comment,
-    priceHT: beer.priceHT,
-    priceTTC: beer.priceTTC,
-    degree: beer.degree,
-    type: beer.type,
-    proprietaire: beer.proprietaire,
-  });
+  try {
+    const response = await beerAPI.addBeer({
+      id: store.listbeers.length + 1,
+      name: beer.name,
+      comment: beer.comment,
+      priceHT: beer.priceHT,
+      priceTTC: beer.priceTTC,
+      alcoholDegre: beer.degree,
+      type: beer.type,
+      owner: beer.proprietaire,
+    });
 
-  // Reset beer
-  Object.assign(beer, {
-    id: "",
-    name: "",
-    comment: "",
-    priceHT: "",
-    priceTTC: "",
-    degree: "",
-    type: "",
-    proprietaire: "",
-  });
+    if (response) {
+      store.listbeers.push({
+        id: store.listbeers.length + 1,
+        name: beer.name,
+        comment: beer.comment,
+        priceHT: beer.priceHT,
+        priceTTC: beer.priceTTC,
+        alcoholDegre: beer.degree,
+        type: beer.type,
+        owner: beer.proprietaire,
+      });
+
+      // Reset beer
+      Object.assign(beer, {
+        id: "",
+        name: "",
+        comment: "",
+        priceHT: "",
+        priceTTC: "",
+        degree: "",
+        type: "",
+        proprietaire: "",
+      });
+    } else {
+      console.error("Failed to add beer:", response.message);
+    }
+  } catch (error) {
+    console.error("Error while adding beer:", error);
+  }
 };
 
 const submitForm = () => {
@@ -142,7 +164,7 @@ const submitForm = () => {
   }
   addBeer();
   console.log("Bière ajoutée:", store.listbeers);
-  router.push("/biere"); // Redirection vers la page bière
+  router.push("/biere");
 };
 
 </script>
