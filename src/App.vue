@@ -1,10 +1,27 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Home</router-link> 
+    <router-link to="/listing">Listing</router-link>
+    <router-link to="/add">Add</router-link>
   </nav>
   <router-view/>
+
+  <MyFooter>
+    <template #left>
+      <p>Shahzad Abdul Rahman</p>
+    </template>
+    <template #center>
+      <p>Master TNSID</p>
+    </template>
+    <template #right>
+      <p>Technologie web TP2</p>
+    </template>
+  </MyFooter>
 </template>
+
+<script setup>
+import MyFooter from './components/footer.vue';
+</script>
 
 <style lang="scss">
 #app {
