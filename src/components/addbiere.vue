@@ -48,6 +48,7 @@
 <script setup>
 import { reactive, computed } from 'vue';
 import { useStore } from '../store/store';
+import router from '@/router';
 
 //Store
 const store = useStore();
@@ -141,6 +142,7 @@ const submitForm = () => {
   }
   addBeer();
   console.log("Bière ajoutée:", store.listbeers);
+  router.push("/biere"); // Redirection vers la page bière
 };
 
 </script>
